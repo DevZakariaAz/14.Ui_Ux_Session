@@ -19,6 +19,12 @@ include_once '../../layouts/head.php'; // Inclusion du fichier d'en-tête
                         <h3 class="card-title">Liste des Absences</h3>
                     </div>
                     <div class="card-body">
+<div class="card-header">
+    <h3 class="card-title">Liste des Absences</h3>
+    <div class="card-tools">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom..." onkeyup="filterTable()">
+    </div>
+</div>
 
                         <!-- Table responsive et structurée -->
                         <div class="table-responsive">
@@ -60,6 +66,20 @@ include_once '../../layouts/head.php'; // Inclusion du fichier d'en-tête
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Ayoub el bouzekri idrissi</td>
+                                        <td>Seance 2 (11:35 - 13:50)</td>
+                                        <td>2025-01-15</td>
+                                        <td>Absence</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="./details.php?id=1" class="btn btn-primary" title="Voir"><i class="fas fa-eye"></i></a>
+                                                <a href="./edit.php?id=1" class="btn btn-info" title="Modifier"><i class="fas fa-edit"></i></a>
+                                                <a href="#" class="btn btn-danger" onclick="confirmDelete(1)" title="Supprimer"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+
 
                                     <!-- Ajoutez d'autres lignes ici -->
                                 </tbody>

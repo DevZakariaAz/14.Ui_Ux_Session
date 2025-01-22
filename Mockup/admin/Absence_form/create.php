@@ -1,35 +1,58 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php
-include_once '../../layouts/head.php'; // Inclusion de l'en-tête
-?>
-
+<?php include_once '../../layouts/head.php'; ?>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <head>
     <style>
-        /* Style pour le conteneur de cases à cocher */
+        /* Style adjustments for responsiveness and form aesthetics */
         .checkbox-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px; /* Espacement entre les cases */
+            gap: 15px;
         }
 
-        .checkbox-container .form-check {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Personnalisation des cases à cocher */
         .form-check-input {
             width: 18px;
             height: 18px;
         }
 
-        /* Amélioration du style des étiquettes */
         .form-check-label {
             font-size: 14px;
             color: #333;
+        }
+
+        table {
+            width: 100%;
+            overflow-x: auto;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .remove-row:hover {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .animate-row {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -37,102 +60,144 @@ include_once '../../layouts/head.php'; // Inclusion de l'en-tête
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
         <?php
-        include_once '../../layouts/nav.php'; // Barre de navigation
-        include_once '../../layouts/aside.php'; // Barre latérale
+        include_once '../../layouts/nav.php';
+        include_once '../../layouts/aside.php';
         ?>
         <main class="py-4">
             <div class="content-wrapper">
                 <div class="card card-info">
-                <div class="card-header border-transparent">
-                    <h3 class="h3">Créer une Absence</h3>
-                </div>
-                    <!-- /.card-header -->
+                    <div class="card-header border-transparent">
+                        <h3 class="h3">Créer des Absences</h3>
+                    </div>
                     <div class="card-body">
-                        <form action="create_absence.php" method="POST" class="container">
-                            <!-- Sélection du Stagiaire -->
-                            <div class="form-group">
-                                <label for="trainee">Stagiaire</label>
-                                <select class="form-control" id="trainee" name="trainee" required>
-                                    <option value="" selected disabled>Sélectionnez un stagiaire</option>
-                                    <?php
-                                    // Array of names
-                                    $trainees = [
-                                        "Zakaria Azizi",
-                                        "Aoulad Amar Samir",
-                                        "Yahya Boussakla",
-                                        "El Bakali Ayoub",
-                                        "SUIRITA Fahd",
-                                        "BOUGTOUB Samia"
-                                    ];
-
-                                    // Loop through the array to generate options
-                                    foreach ($trainees as $id => $name) {
-                                        echo "<option value=\"" . ($id + 1) . "\">$name</option>";
-                                    }
-                                    ?>
-                                </select>
+                        <form action="create_absences.php" method="POST" class="container">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Stagiaire</th>
+                                            <th>Date de l'absence</th>
+                                            <th>Séances</th>
+                                            <th>Statut</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="absenceTable">
+                                        <tr class="animate-row">
+                                            <td>
+                                                <select class="form-control" name="trainee[]" required>
+                                                    <option value="" selected disabled>Sélectionnez un stagiaire</option>
+                                                    <?php
+                                                    $trainees = [
+                                                        "Zakaria Azizi",
+                                                        "Aoulad Amar Samir",
+                                                        "Yahya Boussakla",
+                                                        "El Bakali Ayoub",
+                                                        "SUIRITA Fahd",
+                                                        "BOUGTOUB Samia"
+                                                    ];
+                                                    foreach ($trainees as $id => $name) {
+                                                        echo "<option value=\"" . ($id + 1) . "\">$name</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="date" class="form-control" name="date[]" required>
+                                            </td>
+                                            <td>
+                                                <div class="checkbox-container">
+                                                    <?php
+                                                    for ($i = 1; $i <= 3; $i++) {
+                                                        echo '<div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" name="sessions[0][]" value="' . $i . '">
+                                                                <label class="form-check-label">Séance ' . $i . '</label>
+                                                              </div>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" name="status[]" required>
+                                                    <option value="" selected disabled>Sélectionnez un statut</option>
+                                                    <option value="Absence">Absence</option>
+                                                    <option value="Retard">Retard</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm remove-row">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-
-                            <!-- Sélection des Séances avec cases à cocher -->
-                            <div class="form-group">
-                                <label>Choisissez les Séances</label>
-                                <div class="checkbox-container">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="sessions[]" id="session1" value="1">
-                                        <label class="form-check-label" for="session1">Séance 1 (09h00 - 11h15)</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="sessions[]" id="session2" value="2">
-                                        <label class="form-check-label" for="session2">Séance 2 (11h35 - 13h50)</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="sessions[]" id="session3" value="3">
-                                        <label class="form-check-label" for="session3">Séance 3 (14h45 - 17h00)</label>
-                                    </div>
-                                </div>
+                            <button type="button" class="btn btn-primary" id="addRow">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                            <div class="mt-3">
+                                <a href="../dashboard/dashboard.php" class="btn btn-secondary">Annuler</a>
+                                <button type="submit" class="btn btn-info float-right">Enregistrer</button>
                             </div>
-
-                            <!-- Date de l'absence -->
-                            <div class="form-group">
-                                <label for="date">Date de l'absence</label>
-                                <input type="date" class="form-control" id="date" name="date" required>
-                            </div>
-
-                            <!-- Statut -->
-                            <div class="form-group">
-                                <label for="status" style="font-weight: bold; margin-bottom: 8px;">Statut</label>
-                                <select class="form-control" id="status" name="status" required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
-                                    <option value="" selected disabled>Sélectionnez un statut</option>
-                                    <option value="Absence">Absence</option>
-                                    <option value="Retard">Retard</option>
-                                </select>
-                            </div>
-
-                            <!-- Commentaires -->
-                            <div class="form-group">
-                                <label for="comments">Commentaires</label>
-                                <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Ajoutez des notes supplémentaires (facultatif)"></textarea>
-                            </div>
-
-                            <!-- Boutons -->
-                        <div class="row">
-                            <div class="col-12">
-                            <a href="../dashboard/dashboard.php" class="btn btn-secondary">Annuler</a>
-                            <a href="./index.php" class="btn btn-md btn-info float-right">Ajouter</a>
-                            </div>
-                        </div>
                         </form>
                     </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
         </main>
-        <?php
-        include_once '../../layouts/footer.php'; // Pied de page
-        ?>
+        <?php include_once '../../layouts/footer.php'; ?>
     </div>
-    <?php
-    include_once '../../layouts/script-link.php'; // Scripts
-    ?>
+    <?php include_once '../../layouts/script-link.php'; ?>
+    <script>
+        document.getElementById('addRow').addEventListener('click', () => {
+            const tableBody = document.getElementById('absenceTable');
+            const rowCount = tableBody.rows.length;
+            const newRow = `
+                <tr class="animate-row">
+                    <td>
+                        <select class="form-control" name="trainee[]" required>
+                            <option value="" selected disabled>Sélectionnez un stagiaire</option>
+                            <?php foreach ($trainees as $id => $name) {
+                                echo "<option value='" . ($id + 1) . "'>$name</option>";
+                            } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="date" class="form-control" name="date[]" required>
+                    </td>
+                    <td>
+                        <div class="checkbox-container">
+                            <?php
+                            for ($i = 1; $i <= 3; $i++) {
+                                echo '<div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="sessions[' . '${rowCount}' . '][]" value="' . $i . '">
+                                        <label class="form-check-label">Séance ' . $i . '</label>
+                                      </div>';
+                            }
+                            ?>
+                        </div>
+                    </td>
+                    <td>
+                        <select class="form-control" name="status[]" required>
+                            <option value="" selected disabled>Sélectionnez un statut</option>
+                            <option value="Absence">Absence</option>
+                            <option value="Retard">Retard</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-row">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', newRow);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('tr').remove();
+            }
+        });
+    </script>
 </body>
 </html>

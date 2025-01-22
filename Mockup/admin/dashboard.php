@@ -5,7 +5,6 @@
 include_once '../layouts/head.php';
 ?>
 
-
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
         <?php
@@ -28,6 +27,8 @@ include_once '../layouts/head.php';
                                 <div class="inner">
                                     <h3><?= $absenceData['total'] ?? 93 ?></h3>
                                     <p>Total Étudiants</p>
+                                    <p style="font-size:12px" >Par Jour 01/16</p>
+
                                 </div>
                                 <div class="icon">
                                     <i class="fas fa-users"></i>
@@ -66,7 +67,7 @@ include_once '../layouts/head.php';
                             <div class="small-box bg-warning">
                                 <div class="inner">
                                     <h3><?= $absenceData['excused'] ?? 3 ?></h3>
-                                    <p>Excusés</p>
+                                    <p>Retard</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fas fa-user-clock"></i>
@@ -149,19 +150,54 @@ include_once '../layouts/head.php';
             });
 
             // Radar Chart
-            new Chart(document.getElementById('radarChart').getContext('2d'), {
-                type: 'radar',
-                data: {
-                    labels: ['Présent', 'Absent', 'Retard'],
-                    datasets: [{
-                        label: 'Statut des absences',
-                        data: [50, 30, 20],
-                        backgroundColor: 'rgba(28, 167, 86, 0.2)',
-                        borderColor: '#28a745',
-                    }]
+new Chart(document.getElementById('radarChart').getContext('2d'), {
+    type: 'radar',
+    data: {
+        labels: ['Présent', 'Absent', 'Retard'], // Absence statuses
+        datasets: [
+            {
+                label: 'Groupe DM101',
+                data: [40, 15, 5], // Static data for group DM101
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Light blue
+                borderColor: 'rgba(54, 162, 235, 1)', // Blue border
+                borderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: 'rgba(54, 162, 235, 1)',
+            },
+            {
+                label: 'Groupe DW102',
+                data: [50, 20, 10], // Static data for group DW102
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Light red
+                borderColor: 'rgba(255, 99, 132, 1)', // Red border
+                borderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: 'rgba(255, 99, 132, 1)',
+            },
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            r: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 10, // Adjust tick intervals
                 },
-                options: { responsive: true }
-            });
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)', // Grid color
+                },
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top', // Legend at the top
+            },
+            tooltip: {
+                enabled: true, // Enable tooltips for data details
+            }
+        }
+    }
+});
         });
     </script>
 
